@@ -18,16 +18,29 @@ public class BigInt {
         this.copy(representation);
     }
 
+    /**
+     * Creates a BigInt object
+     *
+     * @param representation Representation of the BigInt object (int[])
+     */
     BigInt(int[] representation) {
         // check size
         ini();
-        for(int i = 0; i < this.representation.size(); i++) {
+        for (int i = 0; i < this.representation.size(); i++) {
             this.representation.set(i, representation[i]);
         }
     }
 
     /**
+     * Creates a BigInt object
+     */
+    BigInt() {
+        ini();
+    }
+
+    /**
      * Compares the calling BigInt to the one given in parameter
+     *
      * @param b BigInt to compare (BigInt)
      * @return Result of the comparison (true: this >= b, false: b > this) (boolean)
      */
@@ -38,7 +51,7 @@ public class BigInt {
         while (i < this.representation.size()) {
             if (this.representation.get(i) > b.getRepresentation().get(i)) {
                 isGreater = true;
-                i =this.representation.size();
+                i = this.representation.size();
             } else if (this.representation.get(i) < b.getRepresentation().get(i)) {
                 i = this.representation.size();
             }
@@ -49,13 +62,14 @@ public class BigInt {
 
     /**
      * Checks if two BigInt are equals
+     *
      * @param b The BigInt to compare to (BigInt)
      * @return Boolean to indicate if equals or not (true: equals; false: not equals) (boolean)
      */
     public boolean isEqual(BigInt b) {
         // check size
         boolean isEq = true;
-        for(int i = 0; i < this.representation.size(); i++) {
+        for (int i = 0; i < this.representation.size(); i++) {
             if (!this.representation.get(i).equals(b.getRepresentation().get(i))) {
                 isEq = false;
                 break;
@@ -73,12 +87,21 @@ public class BigInt {
         }
     }
 
-    /*
-    public BigInt add(BigInt b, BigInt mod) {
+    public BigInt add_mod(BigInt b, BigInt mod) {
         int carry = 0;
-
+        long tmpRes = 0; // intermediate result
+        long carryMask = 0xFFFF0000;
+        long resMask = 0x0000FFFF;
+        int[] resultArray = new int[this.representation.size()];
+        BigInt result = new BigInt();
+        for (int i = 0; i < this.representation.size(); i++) {
+            tmpRes = (long) this.representation.get(i) + (long) b.getRepresentation().get(i) + (long) carry;
+            carry = (int) ((tmpRes & carryMask) >> blockSize); // get the carry and transform it to a int
+            resultArray[i] = (int) (tmpRes & resMask);
+        }
+        result.setRepresentation(resultArray);
+        return result;
     }
-    */
 
     /**
      * Copies a BigInt object into the calling BigInt
@@ -125,14 +148,33 @@ public class BigInt {
     }
 
     /**
-     * Copies an integer list into the representation list
+     * Sets the representation
      *
-     * @param toCopy The integer to copy into the representation (List<Integer>)
+     * @param representation New representation (int[])
+     */
+    public void setRepresentation(int[] representation) {
+        copy(representation);
+    }
+
+    /**
+     * Copies an integer list into the representation list
+     * @param toCopy The integer list to copy into the representation (List<Integer>)
      */
     private void copy(List<Integer> toCopy) {
         // check size
         for (int i = 0; i < toCopy.size(); i++) {
             this.representation.set(i, toCopy.get(i));
+        }
+    }
+
+    /**
+     * Copies an integer array into the representation list
+     * @param toCopy The integer array to copy into the representation (int[])
+     */
+    private void copy(int[] toCopy) {
+        // check size
+        for (int i = 0; i < toCopy.length; i++) {
+            this.representation.set(i, toCopy[i]);
         }
     }
 }
