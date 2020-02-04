@@ -5,6 +5,7 @@ public class BigInt {
 
     private int bitLenght = 256;
     private int blockSize = 32;
+    private int base = 0x80000000; // 2**31
     private List<Integer> representation = new ArrayList<>();
 
     /**
@@ -87,6 +88,12 @@ public class BigInt {
         }
     }
 
+    /**
+     * Modular addition with another BigInt
+     * @param b BigInt to add (BigInt)
+     * @param mod Modular (BigInt)
+     * @return The result of the modular addition (BigInt)
+     */
     public BigInt add_mod(BigInt b, BigInt mod) {
         int carry = 0;
         long tmpRes = 0; // intermediate result
@@ -100,6 +107,36 @@ public class BigInt {
             resultArray[i] = (int) (tmpRes & resMask);
         }
         result.setRepresentation(resultArray);
+        if (!result.isGreater(mod)) {
+            return result;
+        } else {
+            return sub(result, mod);
+        }
+    }
+
+    /**
+     * Classic subtraction 32bits-words by 32bits-word
+     *
+     * @param a first BigInt (BigInt)
+     * @param b BigInt to subtract (BigInt)
+     * @return the result of the classic subtraction (BigInt)
+     */
+    private BigInt sub(BigInt a, BigInt b) {
+        // check size
+        BigInt result = new BigInt();
+        int[] resultRepresentation = new int[a.getRepresentation().size()];
+        int carry = 1;
+        for (int i = 0; i < a.getRepresentation().size(); i++) {
+            int ai = a.getRepresentation().get(i);
+            int bi = b.getRepresentation().get(i);
+            if (ai >= bi) { //a[i] >= b[i]
+                resultRepresentation[i] = ai - bi;
+            } else {
+                resultRepresentation[i] = ai + base - bi;
+                b.getRepresentation().set(i + 1, 1);
+            }
+        }
+        result.setRepresentation(resultRepresentation);
         return result;
     }
 
@@ -158,6 +195,7 @@ public class BigInt {
 
     /**
      * Copies an integer list into the representation list
+     *
      * @param toCopy The integer list to copy into the representation (List<Integer>)
      */
     private void copy(List<Integer> toCopy) {
@@ -169,6 +207,7 @@ public class BigInt {
 
     /**
      * Copies an integer array into the representation list
+     *
      * @param toCopy The integer array to copy into the representation (int[])
      */
     private void copy(int[] toCopy) {
