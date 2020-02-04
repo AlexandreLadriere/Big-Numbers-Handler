@@ -29,8 +29,8 @@ public class BigInt {
     BigInt(List<Integer> representation, int bitLength) {
         // check size
         // check bitlength multiplicity (int dividing blocksize)
-        ini();
         this.bitLength = bitLength;
+        ini();
         this.copy(representation);
     }
 
@@ -53,8 +53,9 @@ public class BigInt {
      */
     BigInt(int[] representation, int bitLength) {
         // check size
-        ini();
+        // check bitlength multiplicity (int dividing blocksize)
         this.bitLength = bitLength;
+        ini();
         this.copy(representation);
     }
 
@@ -71,8 +72,9 @@ public class BigInt {
      * @param bitLength Length of the BigInt in bits (int)
      */
     BigInt(int bitLength) {
-        ini();
+        // check bitlength multiplicity (int dividing blocksize)
         this.bitLength = bitLength;
+        ini();
     }
 
     /**
@@ -125,6 +127,13 @@ public class BigInt {
         for (int i = 0; i < bitLength / blockSize; i++) {
             representation.add(0);
         }
+    }
+
+    // make it private
+    public BigInt mul(BigInt b) {
+        // check same size
+        BigInt result = new BigInt(b.getBitLength() * 2);
+        return result;
     }
 
     /**

@@ -25,9 +25,12 @@ public class Test {
         // A and B must be smaller than P for the modular addition
         System.out.print("A.add_mod(B, P) = ");
         System.out.println(A.add_mod(B, P));
-        // A and B must be smaller than P for the modular addition
+        // A and B must be smaller than P for the modular subtraction
         System.out.print("A.sub_mod(B, P) = ");
         System.out.println(A.sub_mod(B, P));
+        // test for simple multiplication
+        System.out.print("A.mul(B) = ");
+        System.out.println(A.mul(B));
     }
 
     public static void main(String[] args) {
