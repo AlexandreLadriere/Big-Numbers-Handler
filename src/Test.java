@@ -25,6 +25,9 @@ public class Test {
         // A and B must be smaller than P for the modular addition
         System.out.print("A.add_mod(B, P) = ");
         System.out.println(A.add_mod(B, P));
+        // A and B must be smaller than P for the modular addition
+        System.out.print("A.sub_mod(B, P) = ");
+        System.out.println(A.sub_mod(B, P));
     }
 
     public static void main(String[] args) {
@@ -35,12 +38,14 @@ public class Test {
         iniArrayToZero(a);
         iniArrayToZero(b);
         iniArrayToZero(p);
-        a[6] = 10;
-        b[6] = 15;
-        p[6] = 20;
-        a[7] = 35;
-        b[7] = 30;
-        p[7] = 40;
+        p[5] = 2;
+        a[6] = 1;
+        b[6] = 0;
+        p[6] = 0;
+        a[7] = 0;
+        b[7] = 1;
+        p[7] = 0;
+        //2147483647
     }
 
     private void iniArrayToZero(int[] array) {

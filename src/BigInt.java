@@ -3,6 +3,7 @@ import java.util.List;
 
 public class BigInt {
 
+    // TODO: Make a constant file
     private int bitLenght = 256;
     private int blockSize = 32;
     private int base = 0x80000000; // 2**31
@@ -90,52 +91,80 @@ public class BigInt {
 
     /**
      * Modular addition with another BigInt
-     * @param b BigInt to add (BigInt)
+     *
+     * @param b   BigInt to add (BigInt)
      * @param mod Modular (BigInt)
      * @return The result of the modular addition (BigInt)
      */
     public BigInt add_mod(BigInt b, BigInt mod) {
         // check modulo size
         // this and b must be mod mod
-        int carry = 0;
-        long tmpRes = 0; // intermediate result
-        long carryMask = 0xFFFF0000;
-        long resMask = 0x0000FFFF;
-        int[] resultArray = new int[this.representation.size()];
-        BigInt result = new BigInt();
-        for (int i = 0; i < this.representation.size(); i++) {
-            tmpRes = (long) this.representation.get(i) + (long) b.getRepresentation().get(i) + (long) carry;
-            carry = (int) ((tmpRes & carryMask) >> blockSize); // get the carry and transform it to a int
-            resultArray[i] = (int) (tmpRes & resMask);
-        }
-        result.setRepresentation(resultArray);
+        BigInt result = this.add(b);
         if (!result.isGreater(mod)) {
             return result;
         } else {
-            return sub(result, mod);
+            return result.sub(mod);
         }
+    }
+
+    /**
+     * Adds a BigInt to the calling BigInt object (without mod)
+     *
+     * @param b BigInt object to add (BigInt)
+     * @return the result of the addition (BigInt)
+     */
+    private BigInt add(BigInt b) {
+        int carry = 0;
+        long tmpRes = 0L; // intermediate result
+        long resMask = 0x0000FFFFL;
+        int[] resultArray = new int[this.representation.size()];
+        BigInt result = new BigInt();
+        for (int i = this.representation.size() - 1; i >= 0; i--) {
+            tmpRes = (long) this.representation.get(i) + (long) b.getRepresentation().get(i) + (long) carry;
+            carry = (int) (tmpRes >> blockSize - 1); // get the carry and transform it to a int
+            resultArray[i] = (int) (tmpRes & resMask);
+        }
+        result.setRepresentation(resultArray);
+        return result;
+    }
+
+    /**
+     * Modular subtraction between BigInt objects (this minus b mod mod)
+     *
+     * @param b   The BigInt you want to subtract (BigInt)
+     * @param mod the modulus (BigInt)
+     * @return Result of the modular subtraction (BigInt)
+     */
+    public BigInt sub_mod(BigInt b, BigInt mod) {
+        BigInt result = new BigInt();
+        if (!this.isGreater(b)) {
+            result = this.sub(b);
+        } else {
+            result = this.add_mod(mod, mod);
+            result = result.sub(b);
+        }
+        return result;
     }
 
     /**
      * Classic subtraction 32bits-words by 32bits-word
      *
-     * @param a first BigInt (BigInt)
      * @param b BigInt to subtract (BigInt)
      * @return the result of the classic subtraction (BigInt)
      */
-    private BigInt sub(BigInt a, BigInt b) {
+    private BigInt sub(BigInt b) {
         // check size
         BigInt result = new BigInt();
-        int[] resultRepresentation = new int[a.getRepresentation().size()];
+        int[] resultRepresentation = new int[this.representation.size()];
         int carry = 1;
-        for (int i = 0; i < a.getRepresentation().size(); i++) {
-            int ai = a.getRepresentation().get(i);
+        for (int i = this.representation.size() - 1; i >= 0; i--) {
+            int ai = this.representation.get(i);
             int bi = b.getRepresentation().get(i);
             if (ai >= bi) { //a[i] >= b[i]
                 resultRepresentation[i] = ai - bi;
             } else {
                 resultRepresentation[i] = ai + base - bi;
-                b.getRepresentation().set(i + 1, 1);
+                b.getRepresentation().set(i - 1, carry);
             }
         }
         result.setRepresentation(resultRepresentation);
