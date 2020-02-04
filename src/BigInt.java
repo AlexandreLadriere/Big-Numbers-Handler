@@ -4,7 +4,7 @@ import java.util.List;
 public class BigInt {
 
     // TODO: Make a constant file
-    private int bitLenght = 256;
+    private int bitLength = 256;
     private int blockSize = 32;
     private int base = 0x80000000; // 2**31
     private List<Integer> representation = new ArrayList<>();
@@ -23,14 +23,39 @@ public class BigInt {
     /**
      * Creates a BigInt object
      *
+     * @param representation Representation of the BigInt object (List<Integer>)
+     * @param bitLength Length of the BigInt in bits (int)
+     */
+    BigInt(List<Integer> representation, int bitLength) {
+        // check size
+        // check bitlength multiplicity (int dividing blocksize)
+        ini();
+        this.bitLength = bitLength;
+        this.copy(representation);
+    }
+
+    /**
+     * Creates a BigInt object
+     *
      * @param representation Representation of the BigInt object (int[])
      */
     BigInt(int[] representation) {
         // check size
         ini();
-        for (int i = 0; i < this.representation.size(); i++) {
-            this.representation.set(i, representation[i]);
-        }
+        this.copy(representation);
+    }
+
+    /**
+     * Creates a BigInt object
+     *
+     * @param representation Representation of the BigInt object (int[])
+     * @param bitLength Length of the BigInt in bits (int)
+     */
+    BigInt(int[] representation, int bitLength) {
+        // check size
+        ini();
+        this.bitLength = bitLength;
+        this.copy(representation);
     }
 
     /**
@@ -38,6 +63,15 @@ public class BigInt {
      */
     BigInt() {
         ini();
+    }
+
+    /**
+     * Creates a BigInt object
+     * @param bitLength Length of the BigInt in bits (int)
+     */
+    BigInt(int bitLength) {
+        ini();
+        this.bitLength = bitLength;
     }
 
     /**
@@ -84,7 +118,7 @@ public class BigInt {
      * Initializes the representation to 0
      */
     private void ini() {
-        for (int i = 0; i < bitLenght / blockSize; i++) {
+        for (int i = 0; i < bitLength / blockSize; i++) {
             representation.add(0);
         }
     }
