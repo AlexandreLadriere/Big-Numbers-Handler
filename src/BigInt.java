@@ -95,6 +95,8 @@ public class BigInt {
      * @return The result of the modular addition (BigInt)
      */
     public BigInt add_mod(BigInt b, BigInt mod) {
+        // check modulo size
+        // this and b must be mod mod
         int carry = 0;
         long tmpRes = 0; // intermediate result
         long carryMask = 0xFFFF0000;
@@ -158,12 +160,9 @@ public class BigInt {
      * @return String representation of the object (String)
      */
     public String toString() {
-        StringBuilder str = new StringBuilder("BigInt[");
-        for (int i = 0; i < this.representation.size(); i++) {
-            str.append(this.representation.toString());
-            str.append(" ");
-        }
-        return str.append("]").toString();
+        StringBuilder str = new StringBuilder("BigInt");
+        str.append(this.representation.toString());
+        return str.toString();
     }
 
     /**
