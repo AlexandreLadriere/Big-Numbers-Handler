@@ -30,7 +30,7 @@ public class Test {
         System.out.println(A.sub_mod(B, P));
         // test for simple multiplication
         System.out.print("A.mul(B) = ");
-        System.out.println(A.mul(B));
+        //System.out.println(A.mul(B));
     }
 
     public static void main(String[] args) {
@@ -41,13 +41,13 @@ public class Test {
         iniArrayToZero(a);
         iniArrayToZero(b);
         iniArrayToZero(p);
-        p[5] = 2;
-        a[6] = 1;
-        b[6] = 0;
-        p[6] = 0;
+        p[3] = 2;
+        a[5] = 1;
+        a[6] = 0;
         a[7] = 0;
+        b[5] = 0;
+        b[6] = 1;
         b[7] = 1;
-        p[7] = 0;
         //2147483647
     }
 

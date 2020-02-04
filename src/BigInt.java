@@ -129,12 +129,24 @@ public class BigInt {
         }
     }
 
+    /*
     // make it private
     public BigInt mul(BigInt b) {
         // check same size
         BigInt result = new BigInt(b.getBitLength() * 2);
+        int[] resultArray = new int[result.getRepresentation().size()];
+        int shift = blockSize - 1;
+        int shift
+        long tmpMul = 0L;
+        for(int i = this.representation.size() - 1; i >= 0; i--) {
+            for(int j = this.representation.size() - 1; j >= 0; j--) {
+                tmpMul = this.representation.get(i) * b.getRepresentation().get(i);
+                resultArray[]
+            }
+        }
         return result;
     }
+    */
 
     /**
      * Modular addition with another BigInt
@@ -211,7 +223,7 @@ public class BigInt {
                 resultRepresentation[i] = ai - bi;
             } else {
                 resultRepresentation[i] = ai + base - bi;
-                b.getRepresentation().set(i - 1, carry);
+                b.getRepresentation().set(i - 1, b.getRepresentation().get(i - 1) + carry);
             }
         }
         result.setRepresentation(resultRepresentation);
