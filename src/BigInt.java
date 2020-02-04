@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BigInt {
@@ -124,29 +125,39 @@ public class BigInt {
      * Initializes the representation to 0
      */
     private void ini() {
-        for (int i = 0; i < bitLength / blockSize; i++) {
-            representation.add(0);
+        for (int i = 0; i < this.bitLength / this.blockSize; i++) {
+            this.representation.add(0);
         }
     }
 
-    /*
     // make it private
     public BigInt mul(BigInt b) {
         // check same size
         BigInt result = new BigInt(b.getBitLength() * 2);
-        int[] resultArray = new int[result.getRepresentation().size()];
+        BigInt tmp = new BigInt(b.getBitLength() * 2);
+        int[] tmpArray = new int[result.getRepresentation().size()];
+        Arrays.fill(tmpArray, 0);
         int shift = blockSize - 1;
-        int shift
         long tmpMul = 0L;
-        for(int i = this.representation.size() - 1; i >= 0; i--) {
-            for(int j = this.representation.size() - 1; j >= 0; j--) {
-                tmpMul = this.representation.get(i) * b.getRepresentation().get(i);
-                resultArray[]
+        long resMask = 0x7FFFFFFFL;
+        for (int i = this.representation.size() - 1; i >= 0; i--) {
+            for (int j = this.representation.size() - 1; j >= 0; j--) {
+                Arrays.fill(tmpArray, 0);
+                tmpMul = (long) this.representation.get(j) * (long) b.getRepresentation().get(i);
+                System.out.println("tmpMul = " + tmpMul);
+                long tmp2 = (tmpMul >> shift);
+                int leftBlock = (int) (tmp2);
+                System.out.println("left_block = " + leftBlock);
+                int rightBlock = (int) (tmpMul & resMask);
+                System.out.println("right_block = " + rightBlock);
+                tmpArray[i + j] = rightBlock;
+                tmpArray[i + j + 1] = leftBlock;
+                tmp.setRepresentation(tmpArray);
+                result = result.add(tmp);
             }
         }
         return result;
     }
-    */
 
     /**
      * Modular addition with another BigInt
@@ -175,9 +186,9 @@ public class BigInt {
     private BigInt add(BigInt b) {
         int carry = 0;
         long tmpRes = 0L; // intermediate result
-        long resMask = 0x0000FFFFL;
+        long resMask = 0x7FFFFFFFL;
         int[] resultArray = new int[this.representation.size()];
-        BigInt result = new BigInt();
+        BigInt result = new BigInt(this.bitLength); // use another constructor
         for (int i = this.representation.size() - 1; i >= 0; i--) {
             tmpRes = (long) this.representation.get(i) + (long) b.getRepresentation().get(i) + (long) carry;
             carry = (int) (tmpRes >> blockSize - 1); // get the carry and transform it to a int
@@ -195,8 +206,8 @@ public class BigInt {
      * @return Result of the modular subtraction (BigInt)
      */
     public BigInt sub_mod(BigInt b, BigInt mod) {
-        BigInt result = new BigInt();
-        if (this.isGreater(b)) {
+        BigInt result;
+        if (this.isGreater(b)) { // a verifier
             result = this.sub(b);
         } else {
             result = this.add(mod);
@@ -216,10 +227,9 @@ public class BigInt {
         BigInt result = new BigInt();
         int[] resultRepresentation = new int[this.representation.size()];
         int carry = 1;
-        for (int i = this.representation.size() - 1; i >= 0; i--) {
+        for (int i = this.representation.size() - 1; i > 0; i--) {
             int ai = this.representation.get(i);
             int bi = b.getRepresentation().get(i);
-            System.out.println("ai =" + ai + "\nbi = " + bi);
             if (ai >= bi) { //a[i] >= b[i]
                 resultRepresentation[i] = ai - bi;
             } else {
