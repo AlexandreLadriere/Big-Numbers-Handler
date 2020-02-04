@@ -24,7 +24,7 @@ public class BigInt {
      * Creates a BigInt object
      *
      * @param representation Representation of the BigInt object (List<Integer>)
-     * @param bitLength Length of the BigInt in bits (int)
+     * @param bitLength      Length of the BigInt in bits (int)
      */
     BigInt(List<Integer> representation, int bitLength) {
         // check size
@@ -49,7 +49,7 @@ public class BigInt {
      * Creates a BigInt object
      *
      * @param representation Representation of the BigInt object (int[])
-     * @param bitLength Length of the BigInt in bits (int)
+     * @param bitLength      Length of the BigInt in bits (int)
      */
     BigInt(int[] representation, int bitLength) {
         // check size
@@ -67,6 +67,7 @@ public class BigInt {
 
     /**
      * Creates a BigInt object
+     *
      * @param bitLength Length of the BigInt in bits (int)
      */
     BigInt(int bitLength) {
@@ -104,6 +105,9 @@ public class BigInt {
      */
     public boolean isEqual(BigInt b) {
         // check size
+        if (this.bitLength != b.getBitLength()) {
+            return false;
+        }
         boolean isEq = true;
         for (int i = 0; i < this.representation.size(); i++) {
             if (!this.representation.get(i).equals(b.getRepresentation().get(i))) {
@@ -226,6 +230,15 @@ public class BigInt {
         StringBuilder str = new StringBuilder("BigInt");
         str.append(this.representation.toString());
         return str.toString();
+    }
+
+    /**
+     * Gets the bitLength of the BigInt
+     *
+     * @return bitLength og the BigInt (int)
+     */
+    public int getBitLength() {
+        return bitLength;
     }
 
     /**
