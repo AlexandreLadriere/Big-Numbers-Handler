@@ -196,10 +196,10 @@ public class BigInt {
      */
     public BigInt sub_mod(BigInt b, BigInt mod) {
         BigInt result = new BigInt();
-        if (!this.isGreater(b)) {
+        if (this.isGreater(b)) {
             result = this.sub(b);
         } else {
-            result = this.add_mod(mod, mod);
+            result = this.add(mod);
             result = result.sub(b);
         }
         return result;
@@ -219,6 +219,7 @@ public class BigInt {
         for (int i = this.representation.size() - 1; i >= 0; i--) {
             int ai = this.representation.get(i);
             int bi = b.getRepresentation().get(i);
+            System.out.println("ai =" + ai + "\nbi = " + bi);
             if (ai >= bi) { //a[i] >= b[i]
                 resultRepresentation[i] = ai - bi;
             } else {

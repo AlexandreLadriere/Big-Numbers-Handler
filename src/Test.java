@@ -41,13 +41,14 @@ public class Test {
         iniArrayToZero(a);
         iniArrayToZero(b);
         iniArrayToZero(p);
-        p[3] = 2;
-        a[5] = 1;
+        p[3] = 0;
+        p[7] = 10;
+        a[5] = 0;
         a[6] = 0;
-        a[7] = 0;
+        a[7] = 3;
         b[5] = 0;
-        b[6] = 1;
-        b[7] = 1;
+        b[6] = 0;
+        b[7] = 6;
         //2147483647
     }
 
