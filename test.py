@@ -124,6 +124,7 @@ if __name__ == "__main__":
     A = [0, 0, 0, 0, 0, 0, max, max]
     B = [0, 0, 0, 0, 0, 0, 0, 2]
     P = [0, 0, 0, 2, 0, 0, 0, 0]
+    print()
     print("A =", A)
     print("B =", B)
     print("P =", P)
@@ -139,3 +140,8 @@ if __name__ == "__main__":
     print("sub_mod(A, B) =", sub_mod(A, B, P))
     print()
     print("mul(A, B) =", mul(A, B))
+    print()
+    print("mul(mul(A, B), A) =", mul(mul(A, B), A))
+    print()
+    print("mul(mul(A, B), mul(A, B)) =", mul(mul(A, B), mul(A, B)))
+    print()
