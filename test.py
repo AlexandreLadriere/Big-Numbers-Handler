@@ -70,10 +70,72 @@ def convertIntArraytoBigInt(int_array, block_size = 32):
     big_int = int(bin_str, 2)
     return big_int
 
+def mul(a_int_array, b_int_array, bit_a = 256, bit_b = 256, block_size = 32):
+    """
+    Multiplies two integers in an integer array representation.
+    :param a_int_array: integer array representation of the first integer (Integer array)
+    :param b_integer_array: integer array representation of the second integer (Integer array)
+    :param bit_a: length in bits of the first integer (Integer)
+    :param bit_b: length in bits of the second integer (Integer)
+    :param block_size: length in bits of each integer in the array representation (Integer)
+    :return: result of the multiplication between the first integer and the second, in integer array representation (Integer array)
+    """
+    a_big_int = convertIntArraytoBigInt(a_int_array, block_size)
+    b_big_int = convertIntArraytoBigInt(b_int_array, block_size)
+    res = a_big_int * b_big_int
+    res_array = convertBigIntToIntArray(res, bit = bit_a + bit_b, block_size = block_size)
+    return res_array
+
+def add_mod(a_int_array, b_int_array, mod_int_array, block_size = 32):
+    """
+    Modular addition between two big integers
+    :param a_int_array: integer array representation of the first integer (Integer array)
+    :param b_integer_array: integer array representation of the second integer (Integer array)
+    :param mod_integer_array: integer array representation of the modulues integer (Integer array)
+    :param block_size: length in bits of each integer in the array representation (Integer)
+    :return: result of the modular addition between the first integer and the second, in integer array representation (Integer array)
+    """
+    a_big_int = convertIntArraytoBigInt(a_int_array, block_size)
+    b_big_int = convertIntArraytoBigInt(b_int_array, block_size)
+    mod_big_int = convertIntArraytoBigInt(mod_int_array, block_size)
+    res = (a_big_int + b_big_int) % mod_big_int
+    res_array = convertBigIntToIntArray(res, block_size = block_size)
+    return res_array
+
+def sub_mod(a_int_array, b_int_array, mod_int_array, block_size = 32):
+    """
+    Modular subtraction between two big integers
+    :param a_int_array: integer array representation of the first integer (Integer array)
+    :param b_integer_array: integer array representation of the second integer (Integer array)
+    :param mod_integer_array: integer array representation of the modulues integer (Integer array)
+    :param block_size: length in bits of each integer in the array representation (Integer)
+    :return: result of the modular subtraction between the first integer and the second, in integer array representation (Integer array)
+    """
+    a_big_int = convertIntArraytoBigInt(a_int_array, block_size)
+    b_big_int = convertIntArraytoBigInt(b_int_array, block_size)
+    mod_big_int = convertIntArraytoBigInt(mod_int_array, block_size)
+    res = (a_big_int - b_big_int) % mod_big_int
+    res_array = convertBigIntToIntArray(res, block_size = block_size)
+    return res_array
+
+
 if __name__ == "__main__":
     max = 2147483647 # 2^31 (signed)
-    A = [0, 0, 0, 0, 0, 0, 1, 0]
-    B = [0, 0, 0, 0, 0, 0, 0, max]
-    P = [0, 0, 0, 2, 0, 0, 1, 0]
-    print(convertBigIntToIntArray(max + 1))
-    print(convertIntArraytoBigInt(A))
+    A = [0, 0, 0, 0, 0, 0, max, max]
+    B = [0, 0, 0, 0, 0, 0, 0, 2]
+    P = [0, 0, 0, 2, 0, 0, 0, 0]
+    print("A =", A)
+    print("B =", B)
+    print("P =", P)
+    print()
+    A_big_int = convertIntArraytoBigInt(A)
+    B_big_int = convertIntArraytoBigInt(B)
+    P_big_int = convertIntArraytoBigInt(P)
+    add_mod_ = add_mod(A, B, P)
+    sub_mod_ = sub_mod(A, B, P)
+    mul_ = mul(A, B)
+    print("add_mod(A, B) =", add_mod(A, B, P))
+    print()
+    print("sub_mod(A, B) =", sub_mod(A, B, P))
+    print()
+    print("mul(A, B) =", mul(A, B))

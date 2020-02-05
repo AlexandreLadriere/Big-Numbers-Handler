@@ -2,9 +2,10 @@ import java.util.Arrays;
 
 public class Test {
 
-    int[] a = new int[8];
-    int[] b = new int[8];
-    int[] p = new int[8];
+    private int[] a = new int[8];
+    private int[] b = new int[8];
+    private int[] p = new int[8];
+    private int max = 2147483647; // 2^31 (int signed on 32bits)
 
     public Test() {
         iniVariables();
@@ -44,12 +45,11 @@ public class Test {
         p[3] = 2;
         p[7] = 0;
         a[5] = 0;
-        a[6] = 2147483647;
-        a[7] = 2147483647;
+        a[6] = max;
+        a[7] = max;
         b[5] = 0;
         b[6] = 0;
         b[7] = 2;
-        //2147483647
     }
 
     private void iniArrayToZero(int[] array) {
