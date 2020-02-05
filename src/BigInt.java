@@ -8,6 +8,7 @@ public class BigInt {
     private int bitLength = 256;
     private int blockSize = 32;
     private int base = 0x80000000; // 2**31
+    // TODO: add masks
     private List<Integer> representation = new ArrayList<>();
 
     /**
@@ -130,7 +131,12 @@ public class BigInt {
         }
     }
 
-    // make it private
+    /**
+     * Multiplies the calling BigInt with the given BigInt
+     *
+     * @param b BigInt to multiply with (BigInt)
+     * @return The result of the multiplication (BigInt)
+     */
     public BigInt mul(BigInt b) {
         // check same size
         BigInt result = new BigInt(b.getBitLength() * 2);
@@ -138,7 +144,7 @@ public class BigInt {
         int[] tmpArray = new int[result.getRepresentation().size()];
         Arrays.fill(tmpArray, 0);
         int shift = blockSize - 1;
-        long tmpMul = 0L;
+        long tmpMul;
         long resMask = 0x7FFFFFFFL;
         for (int i = this.representation.size() - 1; i >= 0; i--) {
             for (int j = this.representation.size() - 1; j >= 0; j--) {
@@ -182,7 +188,7 @@ public class BigInt {
      */
     private BigInt add(BigInt b) {
         int carry = 0;
-        long tmpRes = 0L; // intermediate result
+        long tmpRes; // intermediate result
         long resMask = 0x7FFFFFFFL;
         int[] resultArray = new int[this.representation.size()];
         BigInt result = new BigInt(this.bitLength); // use another constructor
@@ -256,9 +262,7 @@ public class BigInt {
      * @return String representation of the object (String)
      */
     public String toString() {
-        StringBuilder str = new StringBuilder("BigInt");
-        str.append(this.representation.toString());
-        return str.toString();
+        return "BigInt" + this.representation.toString();
     }
 
     /**
