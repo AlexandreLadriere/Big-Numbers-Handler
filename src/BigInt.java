@@ -144,14 +144,11 @@ public class BigInt {
             for (int j = this.representation.size() - 1; j >= 0; j--) {
                 Arrays.fill(tmpArray, 0);
                 tmpMul = (long) this.representation.get(j) * (long) b.getRepresentation().get(i);
-                System.out.println("tmpMul = " + tmpMul);
                 long tmp2 = (tmpMul >> shift);
                 int leftBlock = (int) (tmp2);
-                System.out.println("left_block = " + leftBlock);
                 int rightBlock = (int) (tmpMul & resMask);
-                System.out.println("right_block = " + rightBlock);
-                tmpArray[i + j] = rightBlock;
-                tmpArray[i + j + 1] = leftBlock;
+                tmpArray[i + j + 1] = rightBlock;
+                tmpArray[i + j] = leftBlock;
                 tmp.setRepresentation(tmpArray);
                 result = result.add(tmp);
             }

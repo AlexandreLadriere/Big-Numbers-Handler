@@ -60,7 +60,7 @@ def convertBigIntToIntArray(big_int, bit = 256, block_size = 32):
     return int_array
 
 if __name__ == "__main__":
-    str_test = intToString(2147483647*2)
+    str_test = intToString(2147483647*2147483647)
     print(str_test)
     int_array_test = bitStringToIntArray(str_test)
     print(int_array_test)
