@@ -1,3 +1,5 @@
+// see: https://github.com/AlexandreLadriere/Big-Numbers-Handler
+
 import java.util.Arrays;
 
 public class Test {
@@ -36,6 +38,10 @@ public class Test {
         System.out.println(A.mul(B).mul(A));
         System.out.print("A.mul(B).mul(A.mul(B)) = ");
         System.out.println(A.mul(B).mul(A.mul(B)));
+        // System.out.println("A.modulusR(52) = ");
+        // System.out.println(A.modulusR(52));
+        // System.out.println("A.mul_montgomery(B, P, new BigInt(), new BigInt(), 8) = ");
+        // System.out.println(A.mul_montgomery(B, P, new BigInt(), new BigInt(), 8));
     }
 
     public static void main(String[] args) {
@@ -46,14 +52,12 @@ public class Test {
         iniArrayToZero(a);
         iniArrayToZero(b);
         iniArrayToZero(p);
-        p[3] = 2;
-        p[7] = 0;
-        a[5] = 0;
+        p[4] = 2;
+        a[5] = 700;
         a[6] = max;
         a[7] = max;
-        b[5] = 0;
-        b[6] = 0;
-        b[7] = 2;
+        b[6] = 1309;
+        b[7] = max;
     }
 
     private void iniArrayToZero(int[] array) {
