@@ -131,13 +131,44 @@ public class BigInt {
         }
     }
 
-    public BigInt mul_montgomery(BigInt b, BigInt mod, BigInt r, BigInt v) {
+    // faire un getK()
+    public BigInt mul_montgomery(BigInt b, BigInt mod, BigInt r, BigInt v, int k) {
         BigInt result = new BigInt(this.bitLength);
         BigInt s; // new BigInt(this.bitLength + b.getBitLength())
-        BigInt t = new BigInt(this.bitLength);
-        BigInt m = new BigInt(this.bitLength + b.getBitLength());
+        BigInt t;
+        BigInt m;
+        BigInt u = new BigInt(this.bitLength + b.getBitLength());
+
         s = this.mul(b); // s = a x b
+
+        BigInt t_tmp = s.mul(v); // t_tmp = s.v
+        t = t_tmp.modulusR(k); // t = t_tmp [r]
         m = t.mul(mod).add(s); // m = s + t.n
+
+        return result;
+    }
+
+    /**
+     * Computes the result of calling BigInt modulus 2^k (with 0 <= k <= 256)
+     *
+     * @param k the power of 2 of the modulus (Integer)
+     * @return Result of calling BigInt modulus 2^k (BigInt)
+     */
+    private BigInt modulusR(int k) {
+        BigInt result = new BigInt();
+        int realBitNumberShift = k + (k / this.blockSize); // integers are on 31 bits, he first one is for the sign
+        int blockNumber = realBitNumberShift / this.blockSize; // number of blocks
+        int remainingBits = realBitNumberShift % this.blockSize; // number of remaining bits
+        int[] res_tmpArray = new int[result.getRepresentation().size()];
+        Arrays.fill(res_tmpArray, 0);
+        for (int i = this.getRepresentation().size() - 1; i >= this.getRepresentation().size() - blockNumber; i--) {
+            res_tmpArray[i] = this.getRepresentation().get(i);
+        }
+        int r_tmp = this.getRepresentation().get(this.getRepresentation().size() - blockNumber - 1);
+        int r_tmpL = r_tmp << (this.blockSize - remainingBits - 1);
+        int r_tmpR = r_tmpL >>> (this.blockSize - remainingBits); // unsigned shift operator
+        res_tmpArray[result.getRepresentation().size() - blockNumber - 1] = r_tmpR;
+        result.setRepresentation(res_tmpArray);
         return result;
     }
 

@@ -36,6 +36,10 @@ public class Test {
         System.out.println(A.mul(B).mul(A));
         System.out.print("A.mul(B).mul(A.mul(B)) = ");
         System.out.println(A.mul(B).mul(A.mul(B)));
+        // System.out.println("A.modulusR(52) = ");
+        // System.out.println(A.modulusR(52));
+        // System.out.println("A.mul_montgomery(B, P, new BigInt(), new BigInt(), 8) = ");
+        // System.out.println(A.mul_montgomery(B, P, new BigInt(), new BigInt(), 8));
     }
 
     public static void main(String[] args) {
@@ -47,12 +51,11 @@ public class Test {
         iniArrayToZero(b);
         iniArrayToZero(p);
         p[3] = 2;
-        p[7] = 0;
-        a[5] = 0;
+        a[3] = max;
+        a[4] = max;
+        a[5] = max;
         a[6] = max;
         a[7] = max;
-        b[5] = 0;
-        b[6] = 0;
         b[7] = 2;
     }
 
