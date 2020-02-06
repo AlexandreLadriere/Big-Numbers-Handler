@@ -9,7 +9,7 @@ __Disclaimer:__ This project had to be done in a certain amount of time. So the 
 
 ## Description
 The goal of this project was to implement a class able to handle calculus with big numbers (more than 64 bits, and especially 256-bit long numbers).
-In order to do that, the [BigInt.java] class represents numbers with a list of (signed) integers. Since integers on are coded 32 bits, the integer list has a size of ```bit_length / 32```, and the maximum for each integer is ```2³¹ = 2147483647``` since they are signed and coded on 32 bits.
+In order to do that, the [BigInt.java] class represents numbers with a list of (signed) integers. The integers are stored in the list in a __big endian__ style. Since integers on are coded 32 bits, the integer list has a size of ```bit_length / 32```, and the maximum for each integer is ```2³¹ = 2147483647``` since they are signed and coded on 32 bits.
 
 For example, ```18014398509482038``` will be represented by ```[0, 0, 0, 0, 0, 0, 8388608, 54]```
  
@@ -45,7 +45,12 @@ A.mul(B).mul(A.mul(B)) = BigInt[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 ### Python tests
 The [test.py] file was created for development purpose. It runs the same calculus, but with using python large numbers implementation. This test file was used to verify the different results returns by the [Test.java]
 You can also change values for A, B and P in this file.  
-For example, by running this file, you will get the following output:
+For example, by running this file with the following command:
+```bash
+$ python3 test.py
+```
+
+you will get the following output:
 ```bash
 A = BigInt[0, 0, 0, 0, 0, 700, 2147483647, 2147483647]
 B = BigInt[0, 0, 0, 0, 0, 0, 1309, 2147483647]
