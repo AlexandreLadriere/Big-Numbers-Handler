@@ -1,6 +1,6 @@
-import java.util.ArrayList;
+// see: https://github.com/AlexandreLadriere/Big-Numbers-Handler
+
 import java.util.Arrays;
-import java.util.List;
 
 public class Test {
 
@@ -53,12 +53,11 @@ public class Test {
         iniArrayToZero(b);
         iniArrayToZero(p);
         p[4] = 2;
-        a[3] = max;
-        a[4] = max;
-        a[5] = max;
+        a[5] = 700;
         a[6] = max;
         a[7] = max;
-        b[7] = 2;
+        b[6] = 1309;
+        b[7] = max;
     }
 
     private void iniArrayToZero(int[] array) {
