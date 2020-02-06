@@ -1,4 +1,6 @@
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Test {
 
@@ -50,7 +52,7 @@ public class Test {
         iniArrayToZero(a);
         iniArrayToZero(b);
         iniArrayToZero(p);
-        p[3] = 2;
+        p[4] = 2;
         a[3] = max;
         a[4] = max;
         a[5] = max;

@@ -4,12 +4,11 @@ import java.util.List;
 
 public class BigInt {
 
-    // TODO: Make a constant file
-    private int bitLength = 256;
-    private int blockSize = 32;
-    private int base = 0x80000000; // 2**31
-    // TODO: add masks
-    private List<Integer> representation = new ArrayList<>();
+    private int bitLength = 256; // Length of the BigInt in bits
+    private int blockSize = 32; // Length of each block used to represent the BigInt, in bits
+    private int base = 0x80000000; // 2**31 (signed int)
+    private long resMask = 0x7FFFFFFFL; // mask used to get the 32 LSB in a long
+    private List<Integer> representation = new ArrayList<>(); // List representation of the BigInt
 
     /**
      * Creates a BigInt object
@@ -17,7 +16,6 @@ public class BigInt {
      * @param representation Representation of the BigInt object (List<Integer>)
      */
     BigInt(List<Integer> representation) {
-        // check size
         ini();
         this.copy(representation);
     }
@@ -29,11 +27,19 @@ public class BigInt {
      * @param bitLength      Length of the BigInt in bits (int)
      */
     BigInt(List<Integer> representation, int bitLength) {
-        // check size
-        // check bitlength multiplicity (int dividing blocksize)
-        this.bitLength = bitLength;
-        ini();
-        this.copy(representation);
+        try {
+            if (bitLength % blockSize == 0) {
+                this.bitLength = bitLength;
+                ini();
+                this.copy(representation);
+            } else {
+                throw new Exception("Constructor: BigInteger can not be created. bitLength parameter is not correct. " +
+                        "It must be a multiple of 32.");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -42,7 +48,6 @@ public class BigInt {
      * @param representation Representation of the BigInt object (int[])
      */
     BigInt(int[] representation) {
-        // check size
         ini();
         this.copy(representation);
     }
@@ -54,11 +59,19 @@ public class BigInt {
      * @param bitLength      Length of the BigInt in bits (int)
      */
     BigInt(int[] representation, int bitLength) {
-        // check size
-        // check bitlength multiplicity (int dividing blocksize)
-        this.bitLength = bitLength;
-        ini();
-        this.copy(representation);
+        try {
+            if (bitLength % blockSize == 0) {
+                this.bitLength = bitLength;
+                ini();
+                this.copy(representation);
+            } else {
+                throw new Exception("Constructor: BigInteger can not be created. bitLength parameter is not correct. " +
+                        "It must be a multiple of 32.");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -74,9 +87,18 @@ public class BigInt {
      * @param bitLength Length of the BigInt in bits (int)
      */
     BigInt(int bitLength) {
-        // check bitlength multiplicity (int dividing blocksize)
-        this.bitLength = bitLength;
-        ini();
+        try {
+            if (bitLength % blockSize == 0) {
+                this.bitLength = bitLength;
+                ini();
+            } else {
+                throw new Exception("Constructor: BigInteger can not be created. bitLength parameter is not correct. " +
+                        "It must be a multiple of 32.");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -86,8 +108,10 @@ public class BigInt {
      * @return Result of the comparison (true: this >= b, false: b > this) (boolean)
      */
     public boolean isGreater(BigInt b) {
-        //check size
         boolean isGreater = false;
+        if (this.bitLength != b.getBitLength()) {
+            return isGreater;
+        }
         int i = 0;
         while (i < this.representation.size()) {
             if (this.representation.get(i) > b.getRepresentation().get(i)) {
@@ -108,7 +132,6 @@ public class BigInt {
      * @return Boolean to indicate if equals or not (true: equals; false: not equals) (boolean)
      */
     public boolean isEqual(BigInt b) {
-        // check size
         if (this.bitLength != b.getBitLength()) {
             return false;
         }
@@ -142,7 +165,7 @@ public class BigInt {
         s = this.mul(b); // s = a x b
 
         BigInt t_tmp = s.mul(v); // t_tmp = s.v
-        t = t_tmp.modulusR(k); // t = t_tmp [r]
+        t = t_tmp.modulusR(k); // t = t_tmp mod r
         m = t.mul(mod).add(s); // m = s + t.n
 
         return result;
@@ -179,14 +202,12 @@ public class BigInt {
      * @return The result of the multiplication (BigInt)
      */
     public BigInt mul(BigInt b) {
-        // check same size
         BigInt result = new BigInt(b.getBitLength() + this.bitLength);
         BigInt tmp = new BigInt(b.getBitLength() + this.bitLength);
         int[] tmpArray = new int[result.getRepresentation().size()];
         Arrays.fill(tmpArray, 0);
         int shift = blockSize - 1;
         long tmpMul;
-        long resMask = 0x7FFFFFFFL;
         for (int i = b.getRepresentation().size() - 1; i >= 0; i--) {
             for (int j = this.representation.size() - 1; j >= 0; j--) {
                 Arrays.fill(tmpArray, 0);
@@ -230,7 +251,6 @@ public class BigInt {
     private BigInt add(BigInt b) {
         int carry = 0;
         long tmpRes; // intermediate result
-        long resMask = 0x7FFFFFFFL;
         int[] resultArray = new int[this.representation.size()];
         BigInt result = new BigInt(this.bitLength); // use another constructor
         for (int i = this.representation.size() - 1; i >= 0; i--) {
@@ -251,7 +271,7 @@ public class BigInt {
      */
     public BigInt sub_mod(BigInt b, BigInt mod) {
         BigInt result;
-        if (this.isGreater(b)) { // a verifier
+        if (this.isGreater(b)) {
             result = this.sub(b);
         } else {
             result = this.add(mod);
@@ -267,21 +287,29 @@ public class BigInt {
      * @return the result of the classic subtraction (BigInt)
      */
     private BigInt sub(BigInt b) {
-        // check size
         BigInt result = new BigInt();
-        int[] resultRepresentation = new int[this.representation.size()];
-        int carry = 1;
-        for (int i = this.representation.size() - 1; i > 0; i--) {
-            int ai = this.representation.get(i);
-            int bi = b.getRepresentation().get(i);
-            if (ai >= bi) { //a[i] >= b[i]
-                resultRepresentation[i] = ai - bi;
+        try {
+            if (this.representation.size() != b.getRepresentation().size()) {
+                throw new Exception("sub: A and B must have the same size");
             } else {
-                resultRepresentation[i] = ai + base - bi;
-                b.getRepresentation().set(i - 1, b.getRepresentation().get(i - 1) + carry);
+                int[] resultRepresentation = new int[this.representation.size()];
+                int carry = 1;
+                for (int i = this.representation.size() - 1; i > 0; i--) {
+                    int ai = this.representation.get(i);
+                    int bi = b.getRepresentation().get(i);
+                    if (ai >= bi) { //a[i] >= b[i]
+                        resultRepresentation[i] = ai - bi;
+                    } else {
+                        resultRepresentation[i] = ai + base - bi;
+                        b.getRepresentation().set(i - 1, b.getRepresentation().get(i - 1) + carry);
+                    }
+                }
+                result.setRepresentation(resultRepresentation);
             }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
-        result.setRepresentation(resultRepresentation);
         return result;
     }
 
@@ -291,9 +319,12 @@ public class BigInt {
      * @param toCopy The BigInt object to copy into the current BigInt (BigInt)
      */
     public void copy(BigInt toCopy) {
-        //check size
-        for (int i = 0; i < toCopy.getRepresentation().size(); i++) {
-            this.representation.set(i, toCopy.representation.get(i));
+        try {
+            for (int i = 0; i < toCopy.getRepresentation().size(); i++) {
+                this.representation.set(i, toCopy.representation.get(i));
+            }
+        } catch (Exception e) {
+            System.out.println("copy: A must have at least the same size as B");
         }
     }
 
@@ -348,9 +379,12 @@ public class BigInt {
      * @param toCopy The integer list to copy into the representation (List<Integer>)
      */
     private void copy(List<Integer> toCopy) {
-        // check size
-        for (int i = 0; i < toCopy.size(); i++) {
-            this.representation.set(i, toCopy.get(i));
+        try {
+            for (int i = 0; i < toCopy.size(); i++) {
+                this.representation.set(i, toCopy.get(i));
+            }
+        } catch (Exception e) {
+            System.out.println("copy: A must have at least the same size as B");
         }
     }
 
@@ -360,9 +394,12 @@ public class BigInt {
      * @param toCopy The integer array to copy into the representation (int[])
      */
     private void copy(int[] toCopy) {
-        // check size
-        for (int i = 0; i < toCopy.length; i++) {
-            this.representation.set(i, toCopy[i]);
+        try {
+            for (int i = 0; i < toCopy.length; i++) {
+                this.representation.set(i, toCopy[i]);
+            }
+        } catch (Exception e) {
+            System.out.println("copy: A must have at least the same size as B");
         }
     }
 }
