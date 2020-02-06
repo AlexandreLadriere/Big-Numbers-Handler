@@ -131,22 +131,32 @@ public class BigInt {
         }
     }
 
+    public BigInt mul_montgomery(BigInt b, BigInt mod, BigInt r, BigInt v) {
+        BigInt result = new BigInt(this.bitLength);
+        BigInt s; // new BigInt(this.bitLength + b.getBitLength())
+        BigInt t = new BigInt(this.bitLength);
+        BigInt m = new BigInt(this.bitLength + b.getBitLength());
+        s = this.mul(b); // s = a x b
+        m = t.mul(mod).add(s); // m = s + t.n
+        return result;
+    }
+
     /**
-     * Multiplies the calling BigInt with the given BigInt
+     * Multiplies the calling BigInt with the given BigInt (they can have a different bit size)
      *
      * @param b BigInt to multiply with (BigInt)
      * @return The result of the multiplication (BigInt)
      */
     public BigInt mul(BigInt b) {
         // check same size
-        BigInt result = new BigInt(b.getBitLength() * 2);
-        BigInt tmp = new BigInt(b.getBitLength() * 2);
+        BigInt result = new BigInt(b.getBitLength() + this.bitLength);
+        BigInt tmp = new BigInt(b.getBitLength() + this.bitLength);
         int[] tmpArray = new int[result.getRepresentation().size()];
         Arrays.fill(tmpArray, 0);
         int shift = blockSize - 1;
         long tmpMul;
         long resMask = 0x7FFFFFFFL;
-        for (int i = this.representation.size() - 1; i >= 0; i--) {
+        for (int i = b.getRepresentation().size() - 1; i >= 0; i--) {
             for (int j = this.representation.size() - 1; j >= 0; j--) {
                 Arrays.fill(tmpArray, 0);
                 tmpMul = (long) this.representation.get(j) * (long) b.getRepresentation().get(i);

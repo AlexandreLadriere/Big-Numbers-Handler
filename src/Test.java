@@ -32,6 +32,10 @@ public class Test {
         // test for simple multiplication
         System.out.print("A.mul(B) = ");
         System.out.println(A.mul(B));
+        System.out.print("A.mul(B).mul(A) = ");
+        System.out.println(A.mul(B).mul(A));
+        System.out.print("A.mul(B).mul(A.mul(B)) = ");
+        System.out.println(A.mul(B).mul(A.mul(B)));
     }
 
     public static void main(String[] args) {
