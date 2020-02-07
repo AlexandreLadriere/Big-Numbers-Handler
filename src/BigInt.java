@@ -162,13 +162,45 @@ public class BigInt {
         BigInt s; // new BigInt(this.bitLength + b.getBitLength())
         BigInt t;
         BigInt m;
-        BigInt u = new BigInt(this.bitLength + b.getBitLength());
+        BigInt u = new BigInt(this.bitLength);
+        int[] u_tmpArray = new int[u.getRepresentation().size()];
+        Arrays.fill(u_tmpArray, 0);
 
         s = this.mul(b); // s = a x b
+        System.out.println("s = " + s.toString());
 
         BigInt t_tmp = s.mul(v); // t_tmp = s.v
+        System.out.println("t_tmp = " + t_tmp.toString());
         t = t_tmp.modulusR(k); // t = t_tmp mod r
+        System.out.println("t = " + t.toString());
         m = t.mul(mod).add(s); // m = s + t.n
+        System.out.println("m = " + m.toString());
+
+        String bigIntBinStr = "";
+        // transform m to bit string
+        for(int i = 0; i < m.getRepresentation().size(); i++) {
+            bigIntBinStr += convertIntToBinString(m.getRepresentation().get(i));
+        }
+        // removing last k bits
+        String newBigIntBinStr = bigIntBinStr.substring(0, bigIntBinStr.length() - k);
+        // adding k 0 at the beginning
+        for(int i = 0; i < bigIntBinStr.length() - k; i++) {
+            newBigIntBinStr = "0" + newBigIntBinStr;
+        }
+        // convert the previous string to BigInt object
+        for(int i = 0; i < u_tmpArray.length; i++) {
+            u_tmpArray[i] = Integer.parseInt(newBigIntBinStr.substring(i * (blockSize -1), (i + 1) * (this.blockSize - 1)), 2);
+        }
+        u.setRepresentation(u_tmpArray);
+
+        if(u.isGreater(mod) || u.isEqual(mod)) {
+            result = u.sub(mod);
+            System.out.println("u <= n");
+        }
+        else {
+            result = u;
+            System.out.println("u < n");
+        }
 
         return result;
     }
@@ -403,5 +435,21 @@ public class BigInt {
         } catch (Exception e) {
             System.out.println("copy: A must have at least the same size as B");
         }
+    }
+
+    /**
+     * Converts an integer into a bin string of size blockSize - 1
+     *
+     * @param a the integer to convert (int)
+     * @return the string of the binary transformation of the integer (String)
+     */
+    private String convertIntToBinString(int a) {
+        StringBuilder result = new StringBuilder(Integer.toBinaryString(a));
+        if (result.length() < blockSize - 1) {
+            for (int i = 0; i < (blockSize - 1) - result.length(); i++) {
+                result.insert(0, "0");
+            }
+        }
+        return result.toString();
     }
 }

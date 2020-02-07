@@ -42,10 +42,68 @@ public class Test {
         // System.out.println(A.modulusR(52));
         // System.out.println("A.mul_montgomery(B, P, new BigInt(), new BigInt(), 8) = ");
         // System.out.println(A.mul_montgomery(B, P, new BigInt(), new BigInt(), 8));
+        testMontgomery();
     }
 
     public static void main(String[] args) {
         new Test();
+    }
+
+    private void testMontgomery() {
+        System.out.println("\n MONTGOMERY TEST");
+        iniArrayToZero(a);
+        iniArrayToZero(b);
+        iniArrayToZero(p);
+        a[7] = 19;
+        b[7] = 3;
+        p[7] = 9;
+
+        BigInt A = new BigInt();
+        A.setRepresentation(a);
+        BigInt B = new BigInt();
+        B.setRepresentation(b);
+        BigInt P = new BigInt();
+        P.setRepresentation(p);
+
+        int k = 4;
+
+        BigInt I = new BigInt();
+        int[] i = new int[8];
+        iniArrayToZero(i);
+        i[7] = 1;
+        I.setRepresentation(i);
+
+        BigInt R = new BigInt();
+        int[] r = new int[8];
+        iniArrayToZero(r);
+        r[7] = 16;
+        R.setRepresentation(r);
+
+        BigInt V = new BigInt();
+        int[] v = new int[8];
+        iniArrayToZero(v);
+        v[7] = 7;
+        V.setRepresentation(v);
+
+        System.out.println("A = " + A.toString());
+        System.out.println("B = " + B.toString());
+        System.out.println("P = " + P.toString());
+        System.out.println("R = " + R.toString());
+        System.out.println("V = " + V.toString());
+        System.out.println("k = " + k);
+
+        BigInt RSquare = R.mul(R);
+        BigInt phiA = A.mul_montgomery(RSquare, P, R, V, k);
+        System.out.println("phiA = " + phiA.toString());
+        BigInt phiB = B.mul_montgomery(RSquare, P, R, V, k);
+        System.out.println("phiB = " + phiB);
+
+        BigInt Tmp = phiA.mul_montgomery(phiB, P, R, V, k );
+        System.out.println("MulMontgomery(phiA, phiB) = " + Tmp.toString());
+
+        BigInt Final = Tmp.mul_montgomery(I, P, R, V, k);
+        System.out.print("Final Montgomery = ");
+        System.out.println(Final.toString());
     }
 
     private void iniVariables() {
