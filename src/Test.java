@@ -35,7 +35,7 @@ public class Test {
         System.out.print("A.mul(B) = ");
         System.out.println(A.mul(B));
 
-        testMontgomery();
+        // testMontgomery();
     }
 
     public static void main(String[] args) {
