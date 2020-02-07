@@ -38,7 +38,7 @@ $ javac -d ../out/ Test.java
 
 Then, to run the code, use the following commands (you must be in the ```src``` folder):
 ```bash
-$ cd ./out
+$ cd ../out
 $ java Test
 ```
 
