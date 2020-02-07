@@ -29,6 +29,19 @@ This class handles the following operations:
 ### Java tests
 The [Test.java] file runs each operation with a pre-determined A, B and P (the modulus). You can change these parameters values in the ```iniVariables``` function.
 
+To compile these files, run the following commands (you must be at the root of the repository):
+```bash
+$ cd src
+$ javac -d ../out/ BigInt.java
+$ javac -d ../out/ Test.java 
+```
+
+Then, to run the code, use the following commands (you must be in the ```src``` folder):
+```bash
+$ cd ../out
+$ java Test
+```
+
 For example, by running this file, you will get the following output:
 ```bash
 A = BigInt[0, 0, 0, 0, 0, 700, 2147483647, 2147483647]

@@ -158,17 +158,63 @@ public class BigInt {
 
     // faire un getK()
     public BigInt mul_montgomery(BigInt b, BigInt mod, BigInt r, BigInt v, int k) {
+        System.out.println("\nmul_montgomery function:");
         BigInt result = new BigInt(this.bitLength);
         BigInt s; // new BigInt(this.bitLength + b.getBitLength())
+        BigInt sBis;
         BigInt t;
         BigInt m;
-        BigInt u = new BigInt(this.bitLength + b.getBitLength());
+        BigInt u = new BigInt(this.bitLength);
+        int[] u_tmpArray = new int[u.getRepresentation().size()];
+        Arrays.fill(u_tmpArray, 0);
 
-        s = this.mul(b); // s = a x b
+        sBis = this.mul(b); // s = a x b
+        s = sBis.castTo512bits();
+        System.out.println("sBis = " + sBis.toString());
+        System.out.println("s = " + s.toString());
 
         BigInt t_tmp = s.mul(v); // t_tmp = s.v
+        System.out.println("t_tmp = " + t_tmp.toString());
         t = t_tmp.modulusR(k); // t = t_tmp mod r
-        m = t.mul(mod).add(s); // m = s + t.n
+        System.out.println("t = " + t.toString());
+        BigInt t_time_n = t.mul(mod);
+        System.out.println("t.mul(mod) = " + t_time_n.toString());
+        System.out.println("s = " + s.toString());
+        m = t_time_n.add(s); // m = s + t.n
+        System.out.println("m = " + m.toString());
+
+        String bigIntBinStr = "";
+        // transform m to bit string
+        for (int i = 0; i < m.getRepresentation().size(); i++) {
+            bigIntBinStr += convertIntToBinString(m.getRepresentation().get(i));
+        }
+        System.out.println("m before removink k bits at the end = " + bigIntBinStr);
+        // removing last k bits
+        String newBigIntBinStr = bigIntBinStr.substring(0, bigIntBinStr.length() - k);
+        System.out.println("m after removink k bits at the end = " + newBigIntBinStr);
+        System.out.println("length after removing k = " + newBigIntBinStr.length());
+        // adding k 0 at the beginning
+        for (int i = 0; i < bigIntBinStr.length() - k; i++) {
+            newBigIntBinStr = "0" + newBigIntBinStr;
+        }
+        System.out.println("length after adding k 0 = " + newBigIntBinStr.length());
+        // ERROR: ERREUR DANS CETTE PARTIE DE CODE
+        // convert the previous string to BigInt object
+        System.out.println("Length = " + newBigIntBinStr.length());
+        for (int i = 0; i < u_tmpArray.length; i++) {
+            u_tmpArray[i] = Integer.parseInt(newBigIntBinStr.substring(i * (blockSize - 1), (i + 1) * (this.blockSize - 1)), 2);
+        }
+        // FIN DE LA PARTIE DE L'ERREUR
+        u.setRepresentation(u_tmpArray);
+        System.out.println("u = " + u.toString());
+
+        if (u.isGreater(mod) || u.isEqual(mod)) {
+            result = u.sub(mod);
+            System.out.println("u <= n");
+        } else {
+            result = u;
+            System.out.println("u < n");
+        }
 
         return result;
     }
@@ -179,7 +225,7 @@ public class BigInt {
      * @param k the power of 2 of the modulus (Integer)
      * @return Result of calling BigInt modulus 2^k (BigInt)
      */
-    private BigInt modulusR(int k) {
+    public BigInt modulusR(int k) {
         BigInt result = new BigInt();
         int realBitNumberShift = k + (k / this.blockSize); // integers are on 31 bits, he first one is for the sign
         int blockNumber = realBitNumberShift / this.blockSize; // number of blocks
@@ -190,7 +236,7 @@ public class BigInt {
             res_tmpArray[i] = this.getRepresentation().get(i);
         }
         int r_tmp = this.getRepresentation().get(this.getRepresentation().size() - blockNumber - 1);
-        int r_tmpL = r_tmp << (this.blockSize - remainingBits - 1);
+        int r_tmpL = r_tmp << (this.blockSize - remainingBits);
         int r_tmpR = r_tmpL >>> (this.blockSize - remainingBits); // unsigned shift operator
         res_tmpArray[result.getRepresentation().size() - blockNumber - 1] = r_tmpR;
         result.setRepresentation(res_tmpArray);
@@ -237,7 +283,7 @@ public class BigInt {
         // check modulo size
         // this and b must be mod mod
         BigInt result = this.add(b);
-        if (!result.isGreater(mod)) {
+        if (!result.isGreater(mod) || result.isEqual(mod)) {
             return result;
         } else {
             return result.sub(mod);
@@ -250,11 +296,13 @@ public class BigInt {
      * @param b BigInt object to add (BigInt)
      * @return the result of the addition (BigInt)
      */
-    private BigInt add(BigInt b) {
+    public BigInt add(BigInt b) {
         int carry = 0;
         long tmpRes; // intermediate result
         int[] resultArray = new int[this.representation.size()];
         BigInt result = new BigInt(this.bitLength); // use another constructor
+        int stop = 0;
+        int start = 0;
         for (int i = this.representation.size() - 1; i >= 0; i--) {
             tmpRes = (long) this.representation.get(i) + (long) b.getRepresentation().get(i) + (long) carry;
             carry = (int) (tmpRes >> blockSize - 1); // get the carry and transform it to a int
@@ -273,7 +321,7 @@ public class BigInt {
      */
     public BigInt sub_mod(BigInt b, BigInt mod) {
         BigInt result;
-        if (this.isGreater(b)) {
+        if (this.isGreater(b) || this.isEqual(b)) {
             result = this.sub(b);
         } else {
             result = this.add(mod);
@@ -288,7 +336,7 @@ public class BigInt {
      * @param b BigInt to subtract (BigInt)
      * @return the result of the classic subtraction (BigInt)
      */
-    private BigInt sub(BigInt b) {
+    public BigInt sub(BigInt b) {
         BigInt result = new BigInt();
         try {
             if (this.representation.size() != b.getRepresentation().size()) {
@@ -313,6 +361,47 @@ public class BigInt {
             e.printStackTrace();
         }
         return result;
+    }
+
+    /**
+     * Extends the length of the calling BigInt by 2
+     */
+    public BigInt extendLengthByTwo() {
+        BigInt result = new BigInt(2 * this.bitLength);
+        int[] tmpArray = new int[this.getRepresentation().size() * 2];
+        Arrays.fill(tmpArray, 0);
+        for (int i = 0; i < this.getRepresentation().size(); i++) {
+            tmpArray[i] = this.getRepresentation().get(i);
+        }
+        int[] tmpArrayInv = reverse(tmpArray);
+        result.setRepresentation(tmpArrayInv);
+        return result;
+    }
+
+    /**
+     * Sets the bit length of the calling BigInt object
+     *
+     * @param bitLength new bit length (int)
+     */
+    private void setBitLength(int bitLength) {
+        this.bitLength = bitLength;
+    }
+
+    /**
+     * Reverses an array ([1, 2, 3] will become [3, 2, 1])
+     *
+     * @param a The integer array to reverse (int[])
+     * @return A new array which is the inverted array
+     */
+    public int[] reverse(int[] a) {
+        int n = a.length;
+        int[] b = new int[n];
+        int j = n;
+        for (int value : a) {
+            b[j - 1] = value;
+            j = j - 1;
+        }
+        return b;
     }
 
     /**
@@ -403,5 +492,37 @@ public class BigInt {
         } catch (Exception e) {
             System.out.println("copy: A must have at least the same size as B");
         }
+    }
+
+    /**
+     * Converts an integer into a bin string of size blockSize - 1
+     *
+     * @param a the integer to convert (int)
+     * @return the string of the binary transformation of the integer (String)
+     */
+    private String convertIntToBinString(int a) {
+        StringBuilder result = new StringBuilder(Integer.toBinaryString(a));
+        if (result.length() < blockSize - 1) {
+            for (int i = 0; i < (blockSize - 1) - result.length(); i++) {
+                result.insert(0, "0");
+            }
+        }
+        return result.toString();
+    }
+
+    /**
+     * Truncates the calling BigInt to 512bits
+     * Avoid using this function !!
+     *
+     * @return A new BigInt on 512 bits
+     */
+    private BigInt castTo512bits() {
+        BigInt result = new BigInt(512);
+        int[] rep = new int[16];
+        for (int i = 0; i < result.getRepresentation().size(); i++) {
+            rep[rep.length - 1 - i] = this.getRepresentation().get(this.getRepresentation().size() - 1 - i);
+        }
+        result.setRepresentation(rep);
+        return result;
     }
 }
