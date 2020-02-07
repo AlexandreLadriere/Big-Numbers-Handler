@@ -6,6 +6,7 @@ This repository is the result of a lab I had during my formation in _Mobility & 
 This project aims to handle big numbers for cryptographic purposes.
 
 __Disclaimer:__ This project had to be done in a certain amount of time. So the code is not perfect and is not specially optimized. I am aware that there are simpler methods for this kind of problem. 
+Moreover, I am still working on the Montgomery algorithm. 
 
 ## Description
 The goal of this project was to implement a class able to handle calculus with big numbers (more than 64 bits, and especially 256-bit long numbers).
