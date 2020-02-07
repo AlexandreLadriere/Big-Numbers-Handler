@@ -228,7 +228,7 @@ public class BigInt {
             res_tmpArray[i] = this.getRepresentation().get(i);
         }
         int r_tmp = this.getRepresentation().get(this.getRepresentation().size() - blockNumber - 1);
-        int r_tmpL = r_tmp << (this.blockSize - remainingBits - 1);
+        int r_tmpL = r_tmp << (this.blockSize - remainingBits);
         int r_tmpR = r_tmpL >>> (this.blockSize - remainingBits); // unsigned shift operator
         res_tmpArray[result.getRepresentation().size() - blockNumber - 1] = r_tmpR;
         result.setRepresentation(res_tmpArray);

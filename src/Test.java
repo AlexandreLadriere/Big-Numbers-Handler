@@ -35,8 +35,6 @@ public class Test {
         System.out.print("A.mul(B) = ");
         System.out.println(A.mul(B));
 
-        BigInt Test = A.extendLengthByTwo();
-        System.out.println(Test);
         testMontgomery();
     }
 
@@ -87,7 +85,13 @@ public class Test {
         System.out.println("V = " + V.toString());
         System.out.println("k = " + k);
 
-        BigInt RSquare = R.mul(R);
+        int[] rsquare = new int[16];
+        rsquare[15] = 4;
+        BigInt RSquare = new BigInt(512);
+        RSquare.setRepresentation(rsquare);
+        // R square must be pre-calculated and be modulus P
+        // for R = 16, R ^ 2 mod P = 4
+
         BigInt phiA = A.mul_montgomery(RSquare, P, R, V, k);
         System.out.println("phiA = " + phiA.toString());
         BigInt phiB = B.mul_montgomery(RSquare, P, R, V, k);
@@ -108,7 +112,7 @@ public class Test {
         p[0] = max;
         p[1] = max;
         a[1] = max;
-        b[1] = max;
+        b[1] = max-1;
         a[7] = max;
         b[7] = max;
     }
