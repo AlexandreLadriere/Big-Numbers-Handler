@@ -158,6 +158,7 @@ public class BigInt {
 
     // faire un getK()
     public BigInt mul_montgomery(BigInt b, BigInt mod, BigInt r, BigInt v, int k) {
+        System.out.println("\nmul_montgomery function:");
         BigInt result = new BigInt(this.bitLength);
         BigInt s; // new BigInt(this.bitLength + b.getBitLength())
         BigInt sBis;
@@ -187,16 +188,23 @@ public class BigInt {
         for (int i = 0; i < m.getRepresentation().size(); i++) {
             bigIntBinStr += convertIntToBinString(m.getRepresentation().get(i));
         }
+        System.out.println("m before removink k bits at the end = " + bigIntBinStr);
         // removing last k bits
         String newBigIntBinStr = bigIntBinStr.substring(0, bigIntBinStr.length() - k);
+        System.out.println("m after removink k bits at the end = " + newBigIntBinStr);
+        System.out.println("length after removing k = " + newBigIntBinStr.length());
         // adding k 0 at the beginning
         for (int i = 0; i < bigIntBinStr.length() - k; i++) {
             newBigIntBinStr = "0" + newBigIntBinStr;
         }
+        System.out.println("length after adding k 0 = " + newBigIntBinStr.length());
+        // ERROR: ERREUR DANS CETTE PARTIE DE CODE
         // convert the previous string to BigInt object
+        System.out.println("Length = " + newBigIntBinStr.length());
         for (int i = 0; i < u_tmpArray.length; i++) {
             u_tmpArray[i] = Integer.parseInt(newBigIntBinStr.substring(i * (blockSize - 1), (i + 1) * (this.blockSize - 1)), 2);
         }
+        // FIN DE LA PARTIE DE L'ERREUR
         u.setRepresentation(u_tmpArray);
         System.out.println("u = " + u.toString());
 
