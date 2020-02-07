@@ -121,9 +121,9 @@ def sub_mod(a_int_array, b_int_array, mod_int_array, block_size = 32):
 
 if __name__ == "__main__":
     max = 2147483647 # 2^31 (signed)
-    A = [0, 0, 0, max, max, max, max, max]
-    B = [0, 0, 0, 0, 0, 0, 0, 2]
-    P = [0, 0, 0, 0, 0, 0, 0, 8]
+    A = [0, max, 0, 0, 0, 0, 0, max]
+    B = [0, max, 0, 0, 0, 0, 0, max]
+    P = [max, max, 0, 0, 0, 0, 0, 0]
     print()
     print("A =", A)
     print("B =", B)
@@ -140,10 +140,5 @@ if __name__ == "__main__":
     print("sub_mod(A, B) =", sub_mod(A, B, P))
     print()
     print("mul(A, B) =", mul(A, B))
-    print()
-    print("mul(mul(A, B), A) =", mul(mul(A, B), A))
-    print()
-    print("mul(mul(A, B), mul(A, B)) =", mul(mul(A, B), mul(A, B)))
-    print()
     # print(convertBigIntToIntArray(2**52))
     # print("A mod 2^52 =", convertBigIntToIntArray(A_big_int % (2**52)))

@@ -34,14 +34,9 @@ public class Test {
         // test for simple multiplication
         System.out.print("A.mul(B) = ");
         System.out.println(A.mul(B));
-        System.out.print("A.mul(B).mul(A) = ");
-        System.out.println(A.mul(B).mul(A));
-        System.out.print("A.mul(B).mul(A.mul(B)) = ");
-        System.out.println(A.mul(B).mul(A.mul(B)));
-        // System.out.println("A.modulusR(52) = ");
-        // System.out.println(A.modulusR(52));
-        // System.out.println("A.mul_montgomery(B, P, new BigInt(), new BigInt(), 8) = ");
-        // System.out.println(A.mul_montgomery(B, P, new BigInt(), new BigInt(), 8));
+
+        BigInt Test = A.extendLengthByTwo();
+        System.out.println(Test);
         testMontgomery();
     }
 
@@ -110,11 +105,11 @@ public class Test {
         iniArrayToZero(a);
         iniArrayToZero(b);
         iniArrayToZero(p);
-        p[4] = 2;
-        a[5] = 700;
-        a[6] = max;
+        p[0] = max;
+        p[1] = max;
+        a[1] = max;
+        b[1] = max;
         a[7] = max;
-        b[6] = 1309;
         b[7] = max;
     }
 
